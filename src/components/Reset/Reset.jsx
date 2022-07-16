@@ -1,36 +1,29 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
-export default function Register(props) {
-  const [name, setName] = useState("");
+export default function ForgetPass() {
   const [email, setEmail] = useState("");
+  const [token, setToken] = useState("");
   const [password, setPassword] = useState("");
   const [password_confirmation, setPassCon] = useState("");
   const [message, setMessage] = useState("");
-  const navigate = useNavigate();
-
-  const handleRegister = (e) => {
+  const handleResetPass = (e) => {
     e.preventDefault();
+    const data = {
+      email,
+      token,
+      password,
+      password_confirmation,
+    };
     axios
-      .post("/register", {
-        name,
-        email,
-        password,
-        password_confirmation,
-      })
+      .post("/resetpass", data)
       .then((res) => {
-        localStorage.setItem("token", res.data.token);
-        navigate("/profile");
-        props.setUser(res.data.user);
+        setMessage(res.data.message);
+        document.getElementById("forgetform").reset();
       })
       .catch((err) => setMessage(err.response.data.message));
   };
-  useEffect(() => {
-    if (localStorage.getItem("token")) {
-      navigate("/profile");
-    }
-  }, []);
   return (
     <div>
       <div
@@ -40,8 +33,8 @@ export default function Register(props) {
         <div className="col-md-4"></div>
         <div className="col-md-4">
           <div className="card p-2 bg-light">
-            <h3 className="text-center text-bold">Register</h3>
-            <form className="p-3" onSubmit={handleRegister}>
+            <h3 className="text-center text-bold">Reset Password</h3>
+            <form className="p-3" onSubmit={handleResetPass} id="forgetform">
               {message ? (
                 <div className="alert alert-danger">{message}</div>
               ) : (
@@ -49,17 +42,17 @@ export default function Register(props) {
               )}
               <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">
-                  User Name
+                  Pin Code
                 </label>
                 <input
                   type="text"
                   class="form-control"
-                  name="name"
+                  name="token"
                   placeholder="name@example.com"
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => setToken(e.target.value)}
                 />
               </div>
-              <div className="mb-3">
+              <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">
                   Email address
                 </label>
@@ -72,34 +65,35 @@ export default function Register(props) {
                 />
               </div>
               <div class="mb-3">
-                <label for="exampleFormControlTextarea1" class="form-label">
-                  Password
+                <label for="exampleFormControlInput1" class="form-label">
+                  New Password
                 </label>
                 <input
-                  class="form-control"
                   type="password"
+                  class="form-control"
                   name="password"
+                  placeholder="name@example.com"
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <div className="mb-3">
-                <label for="exampleFormControlTextarea1" class="form-label">
+              <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">
                   Confirm Password
                 </label>
                 <input
-                  class="form-control"
                   type="password"
-                  name="c_password"
+                  class="form-control"
+                  name="confirm_pass"
+                  placeholder="name@example.com"
                   onChange={(e) => setPassCon(e.target.value)}
                 />
               </div>
-              <div className="mb-3">
-                <button type="submit" class="btn btn-primary mb-2 w-100">
-                  Sign Up
-                </button>
-                <span>Allready have an account?</span>{" "}
-                <Link to="/login">Click here</Link>
-              </div>
+              <button type="submit" class="btn btn-primary my-4 w-100">
+                Forget Password
+              </button>
+              Already have an accout? <Link to="/login">Login</Link>
+              <br />
+              Don't have an accout? <Link to="/register">Register</Link>
             </form>
           </div>
         </div>
